@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+COURSE_NOTES_SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+COURSE_NOTES_REPO_ROOT="$(cd -- "$COURSE_NOTES_SCRIPT_DIR/.." && pwd -P)"
+COURSE_NOTES_EXECUTABLE="$COURSE_NOTES_REPO_ROOT/.venv/bin/course-notes"
+
+if [[ ! -f "$COURSE_NOTES_EXECUTABLE" || ! -x "$COURSE_NOTES_EXECUTABLE" ]]; then
+  echo "course-notes: run scripts/install.sh first" >&2
+  exit 1
+fi
+
+cd -- "$COURSE_NOTES_REPO_ROOT"
+source "$COURSE_NOTES_SCRIPT_DIR/lib/runtime-env.sh"
+exec "$COURSE_NOTES_EXECUTABLE" "$@"

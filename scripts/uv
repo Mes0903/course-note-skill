@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+COURSE_NOTES_SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+COURSE_NOTES_REPO_ROOT="$(cd -- "$COURSE_NOTES_SCRIPT_DIR/.." && pwd -P)"
+exec "$COURSE_NOTES_REPO_ROOT/.tools/uv/uv" "$@"

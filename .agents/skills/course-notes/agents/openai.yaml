@@ -1,0 +1,4 @@
+interface:
+  display_name: "Course Notes"
+  short_description: "Build aligned bilingual transcript articles"
+  default_prompt: "Use $course-notes to turn this video URL into complete bilingual transcript paragraphs, starting a new frame only for meaningful visual changes; preserve all speech, including asides, and finish with a fresh content review."
