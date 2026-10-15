@@ -5,6 +5,11 @@
 /.ruff_cache/
 /.cache/
 /.acceptance/
+/.course-notes-runtime.json
+/.course-notes.lock
+/.superpowers/
+/docs/superpowers/
+/tests/
 /runs/
 /courses/*
 !/courses/.gitkeep

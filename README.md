@@ -2,19 +2,25 @@
 
 Course Notes is a small local agent workflow that turns one video URL into aligned transcript articles. The finished output includes a readable source-language transcript and a Taiwanese Traditional Chinese version. One segment is one prose paragraph. Both versions use the same segments, times, visual boundaries, and images; several adjacent paragraphs may share one meaningful visual group.
 
+For the complete data flow, program flow, project structure, responsibility boundaries, and artifact contracts, see [Architecture](docs/architecture.md).
+
 ## Requirements and install
 
-Python 3.12, FFmpeg, and FFprobe are required. From the repository root, run:
+The installer supports GNU/Linux x86-64, including WSL2. Python 3.12, Bash, curl, sha256sum, tar, unzip, FFmpeg, FFprobe, and GNU core utilities are required. On a new machine:
 
 ```bash
+git clone https://github.com/Mes0903/course-note-skill.git
+cd course-note-skill
 scripts/install.sh --device auto
 ```
 
 The installer creates `.venv`, installs pinned Deno for yt-dlp, and selects CPU or CUDA dependencies. Whisper models are cached under `.cache/course-notes/models` when first used.
 
+The complete agent workflow also requires the external [zhtw-translocalizer skill](https://github.com/hanaya-dev/zhTW-translocalizer-skills), including its Python linter. Install that skill separately according to its instructions; `scripts/install.sh` installs only this project's tools. Its linter requires Python 3.10 or newer.
+
 ## Use with the agent
 
-Give the URL to the `course-notes` skill. The agent runs preparation, reads the complete raw transcript and visual evidence, writes the two article decisions, obtains a fresh content review, and publishes both Markdown files. A run is complete only when `source.md` and `zh-TW.md` exist.
+Open the cloned repository as the agent's workspace. The project-local skill is [`.agents/skills/course-notes/SKILL.md`](.agents/skills/course-notes/SKILL.md); keep it inside the checkout because it locates the CLI by walking up to the repository root. Give the URL to that skill. The agent runs preparation, reads the complete raw transcript and visual evidence, writes the two article decisions, obtains a fresh content review, and publishes both Markdown files. A run is complete only when `source.md` and `zh-TW.md` exist.
 
 ## Mechanical commands
 
@@ -26,6 +32,8 @@ scripts/course-notes prepare VIDEO_URL --output /absolute/path/to/output \
 ```
 
 `--language` accepts `auto` or a language code. `--device` accepts `auto`, `cuda`, or `cpu`. Successful stdout is one JSON object containing absolute artifact paths, detected language, transcript segment count, and screenshot count.
+
+`$OUTPUT/prepare.log` is written and flushed as the run proceeds. It records the current phase, download progress, retry notices, and the final error if a phase fails. During a long run, inspect it with `tail -f "$OUTPUT/prepare.log"`. The tool retries interrupted downloads within the same run; after an exhausted failure, keep the log and choose a new empty output directory for another run.
 
 After the agent has written `article.json` and `translation.json`, `compose` validates and renders the final aligned articles:
 
@@ -41,6 +49,7 @@ scripts/course-notes compose --output /absolute/path/to/output \
 
 ```text
 output/
+  prepare.log
   video.<actual-extension>
   audio.wav
   transcript.raw.json

@@ -6,7 +6,7 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
   "faster-whisper>=1.2,<2",
   "opencv-python>=5,<6",
-  "yt-dlp[default]>=2026.6.9,<2027",
+  "yt-dlp[default]>=2026.8.19,<2027",
 ]
 
 [project.optional-dependencies]
